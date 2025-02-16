@@ -4,6 +4,7 @@
   1. Tables
     - users (extends auth.users)
       - name
+      - email
       - is_doctor
     - posts
       - content
@@ -33,6 +34,7 @@
 CREATE TABLE public.users (
   id uuid REFERENCES auth.users PRIMARY KEY,
   name text NOT NULL,
+  email text NOT NULL,
   is_doctor boolean DEFAULT false,
   created_at timestamptz DEFAULT now()
 );
