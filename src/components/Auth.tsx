@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../store/authStore';
-import { Heart, Stethoscope } from 'lucide-react';
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/authStore";
+import { Heart, Stethoscope } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const Auth = () => {
   const location = useLocation();
-  const isLogin = location.pathname === '/login';
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const isLogin = location.pathname === "/login";
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [isDoctor, setIsDoctor] = useState(false);
   const { signIn, signUp } = useAuthStore();
   const navigate = useNavigate();
@@ -22,9 +23,9 @@ export const Auth = () => {
         await signUp(email, password, name, isDoctor);
       }
       // After successful authentication, navigate to mood page first
-      navigate('/mood');
+      navigate("/mood");
     } catch (error) {
-      console.error('Authentication error:', error);
+      console.error("Authentication error:", error);
     }
   };
 
@@ -35,13 +36,15 @@ export const Auth = () => {
           <Heart className="w-12 h-12 text-purple-500" />
         </div>
         <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
-          {isLogin ? 'Welcome Back' : 'Create Account'}
+          {isLogin ? "Welcome Back" : "Create Account"}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
             <>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Name</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Name
+                </label>
                 <input
                   type="text"
                   value={name}
@@ -50,23 +53,12 @@ export const Auth = () => {
                   required
                 />
               </div>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="isDoctor"
-                  checked={isDoctor}
-                  onChange={(e) => setIsDoctor(e.target.checked)}
-                  className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-                />
-                <label htmlFor="isDoctor" className="flex items-center text-sm text-gray-700">
-                  I am a mental health professional
-                  <Stethoscope className="h-4 w-4 ml-1 text-purple-500" />
-                </label>
-              </div>
             </>
           )}
           <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
             <input
               type="email"
               value={email}
@@ -76,7 +68,9 @@ export const Auth = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Password</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
             <input
               type="password"
               value={password}
@@ -85,11 +79,28 @@ export const Auth = () => {
               required
             />
           </div>
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="isDoctor"
+              checked={isDoctor}
+              onChange={(e) => setIsDoctor(e.target.checked)}
+              className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+              title="I am a mental health professional"
+            />
+            <label
+              htmlFor="isDoctor"
+              className="flex items-center text-sm text-gray-700"
+            >
+              I am a mental health professional
+              <Stethoscope className="h-4 w-4 ml-1 text-purple-500" />
+            </label>
+          </div>
           <button
             type="submit"
             className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
           >
-            {isLogin ? 'Sign In' : 'Create Account'}
+            {isLogin ? "Sign In" : "Create Account"}
           </button>
         </form>
         <p className="mt-4 text-center text-sm text-gray-600">
@@ -98,7 +109,7 @@ export const Auth = () => {
             to={isLogin ? "/signup" : "/login"}
             className="text-purple-600 hover:text-purple-500"
           >
-            {isLogin ? 'Sign up' : 'Sign in'}
+            {isLogin ? "Sign up" : "Sign in"}
           </Link>
         </p>
       </div>
