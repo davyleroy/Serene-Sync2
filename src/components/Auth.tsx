@@ -39,7 +39,7 @@ export const Auth = () => {
       if (isDoctor) {
         navigate("/dashboard/patients");
       } else {
-        navigate("/dashboard");
+        navigate("/mood");
       }
     } catch (error) {
       console.error("Authentication error:", error);
@@ -53,9 +53,9 @@ export const Auth = () => {
     }
   };
 
-  const handleSkipAuth = () => {
-    navigate("/dashboard");
-  };
+  //  const handleSkipAuth = () => {
+  //    navigate("/dashboard");
+  //  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
@@ -151,12 +151,7 @@ export const Auth = () => {
             )}
           </button>
         </form>
-        <button
-          onClick={handleSkipAuth}
-          className="w-full mt-4 py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-        >
-          Skip Authentication
-        </button>
+
         <p className="mt-4 text-center text-sm text-gray-600">
           {isLogin ? "Don't have an account? " : "Already have an account? "}
           <Link

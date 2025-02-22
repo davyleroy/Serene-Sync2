@@ -32,7 +32,7 @@
 
 -- Create tables
 CREATE TABLE public.users (
-  id uuid REFERENCES auth.users PRIMARY KEY,
+  id uuid REFERENCES auth.users(id) PRIMARY KEY,
   name text NOT NULL,
   email text NOT NULL,
   is_doctor boolean DEFAULT false,
@@ -41,7 +41,7 @@ CREATE TABLE public.users (
 
 CREATE TABLE public.posts (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid REFERENCES public.users NOT NULL,
+  user_id uuid REFERENCES public.users(id) NOT NULL,
   content text NOT NULL,
   flagged boolean DEFAULT false,
   created_at timestamptz DEFAULT now()
@@ -49,8 +49,8 @@ CREATE TABLE public.posts (
 
 CREATE TABLE public.messages (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  sender_id uuid REFERENCES public.users NOT NULL,
-  receiver_id uuid REFERENCES public.users NOT NULL,
+  sender_id uuid REFERENCES public.users(id) NOT NULL,
+  receiver_id uuid REFERENCES public.users(id) NOT NULL,
   content text NOT NULL,
   read boolean DEFAULT false,
   created_at timestamptz DEFAULT now()
@@ -64,8 +64,8 @@ CREATE TABLE public.moods (
 
 CREATE TABLE public.daily_moods (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid REFERENCES public.users NOT NULL,
-  mood_id uuid REFERENCES public.moods NOT NULL,
+  user_id uuid REFERENCES public.users(id) NOT NULL,
+  mood_id uuid REFERENCES public.moods(id) NOT NULL,
   date date DEFAULT CURRENT_DATE,
   notes text,
   created_at timestamptz DEFAULT now()
