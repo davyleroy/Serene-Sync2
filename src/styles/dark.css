@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Dark mode styles */
+.dark {
+  --bg-color: #000;
+  --text-color: #fff;
+}
+
+.dark .bg-white {
+  background-color: var(--bg-color) !important;
+}
+
+.dark .text-gray-900 {
+  color: var(--text-color) !important;
+}
+
+.dark .text-gray-800 {
+  color: var(--text-color) !important;
+}
+
+.dark .text-gray-700 {
+  color: var(--text-color) !important;
+}
+
+.dark .text-gray-600 {
+  color: var(--text-color) !important;
+}
+
+.dark .text-gray-500 {
+  color: var(--text-color) !important;
+}
+
+.dark .text-gray-400 {
+  color: var(--text-color) !important;
+}
+
+.dark .text-gray-300 {
+  color: var(--text-color) !important;
+}
+
+.dark .text-gray-200 {
+  color: var(--text-color) !important;
+}
+
+.dark .text-gray-100 {
+  color: var(--text-color) !important;
+}
+
+.dark .text-gray-50 {
+  color: var(--text-color) !important;
+}
