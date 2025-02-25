@@ -1,7 +1,14 @@
-import React from 'react';
-import { User, Settings, LogOut, MessageCircle, Users, Stethoscope } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../../store/authStore';
+import React from "react";
+import {
+  User,
+  Settings,
+  LogOut,
+  MessageCircle,
+  Users,
+  Stethoscope,
+} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../store/authStore";
 
 export const DashboardNav = () => {
   const { signOut, user } = useAuthStore();
@@ -10,18 +17,21 @@ export const DashboardNav = () => {
   const handleSignOut = async () => {
     try {
       await signOut();
-      navigate('/');
+      navigate("/");
     } catch (error) {
-      console.error('Error signing out:', error);
+      console.error("Error signing out:", error);
     }
   };
 
   return (
-    <nav className="bg-white shadow-sm">
+    <nav className="bg-white shadow-sm fixed w-full z-30 pt-4">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex-shrink-0 flex items-center">
-            <Link to="/dashboard" className="text-xl font-semibold text-purple-600 flex items-center">
+            <Link
+              to="/dashboard"
+              className="text-xl font-semibold text-purple-600 flex items-center"
+            >
               Serene Sync
               {user?.is_doctor && (
                 <Stethoscope className="h-5 w-5 text-purple-500 ml-2" />

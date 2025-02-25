@@ -50,6 +50,9 @@ export const SocialFeed = () => {
   const [showOptions, setShowOptions] = useState<{ [key: string]: boolean }>(
     {}
   );
+  const [showComments, setShowComments] = useState<{ [key: string]: boolean }>(
+    {}
+  );
 
   useEffect(() => {
     fetchPosts();
@@ -99,10 +102,10 @@ export const SocialFeed = () => {
     const randomPosts = Array.from({ length: 5 }, (_, index) => ({
       id: `random-${index}`,
       content: `This is a randomly generated post #${index + 1}`,
-      user_id: "random-user",
+      user_id: `random-user-${index + 1}`,
       created_at: new Date().toISOString(),
       users: {
-        name: "Random User",
+        name: `Random User ${index + 1}`,
         is_doctor: false,
       },
       likes: Math.floor(Math.random() * 100),
@@ -117,13 +120,19 @@ export const SocialFeed = () => {
     if (!newPost.trim() || !user) return;
 
     try {
-      const { data, error } = await supabase.from("posts").insert({
-        content: newPost.trim(),
-        user_id: user.id,
-      }).select(`
+      const randomUserId = `random-user-${Math.floor(Math.random() * 1000)}`;
+      const { data, error } = await supabase
+        .from("posts")
+        .insert({
+          content: newPost.trim(),
+          user_id: randomUserId,
+        })
+        .select(
+          `
           *,
           users (name, is_doctor)
-        `);
+        `
+        );
 
       if (error) throw error;
 
@@ -178,9 +187,10 @@ export const SocialFeed = () => {
     if (!commentText[postId]?.trim() || !user) return;
 
     try {
+      const randomUserId = `random-user-${Math.floor(Math.random() * 1000)}`;
       const { error } = await supabase.from("comments").insert({
         content: commentText[postId].trim(),
-        user_id: user.id,
+        user_id: randomUserId,
         post_id: postId,
       });
 
@@ -199,12 +209,12 @@ export const SocialFeed = () => {
                     {
                       id: `comment-${Date.now()}`,
                       content: commentText[postId].trim(),
-                      user_id: user.id,
+                      user_id: randomUserId,
                       post_id: postId,
                       created_at: new Date().toISOString(),
                       users: {
-                        name: user.name,
-                        is_doctor: user.is_doctor,
+                        name: `Random User ${Math.floor(Math.random() * 1000)}`,
+                        is_doctor: false,
                       },
                     },
                   ],
@@ -268,12 +278,39 @@ export const SocialFeed = () => {
     }));
   };
 
+  const toggleComments = (postId: string) => {
+    setShowComments((prev) => ({
+      ...prev,
+      [postId]: !prev[postId],
+    }));
+  };
+
   if (loading) {
     return <div className="text-center py-8">Loading...</div>;
   }
 
   return (
     <div className="relative max-w-2xl mx-auto space-y-6 pb-24">
+      {/* Create Post */}
+      <div className="bg-white rounded-xl shadow-md p-6">
+        <textarea
+          value={newPost}
+          onChange={(e) => setNewPost(e.target.value)}
+          placeholder="Share your thoughts..."
+          className="w-full p-3 border border-gray-300 rounded-lg focus:border-purple-500 focus:ring focus:ring-purple-200"
+          rows={3}
+        />
+        <div className="mt-3 flex justify-end">
+          <button
+            onClick={createPost}
+            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center"
+          >
+            <Send className="h-4 w-4 mr-2" />
+            Post
+          </button>
+        </div>
+      </div>
+
       {/* Random Posts */}
       {randomPosts.map((post) => (
         <div key={post.id} className="bg-white rounded-xl shadow-md p-6">
@@ -398,56 +435,66 @@ export const SocialFeed = () => {
               />
               <span>{post.likes}</span>
             </button>
-            <div className="flex items-center space-x-2">
+            <button
+              onClick={() => toggleComments(post.id)}
+              className="flex items-center space-x-2"
+            >
               <MessageCircle className="h-5 w-5" />
               <span>{post.comments?.length || 0}</span>
-            </div>
+            </button>
           </div>
 
           {/* Comments */}
-          <div className="space-y-4">
-            {post.comments?.map((comment) => (
-              <div key={comment.id} className="pl-6 border-l-2 border-gray-100">
-                <div className="flex items-center">
-                  <span className="font-medium text-gray-800">
-                    {comment.users.name}
-                  </span>
-                  {comment.users.is_doctor && (
-                    <span className="ml-2 px-2 py-0.5 bg-purple-100 text-purple-600 text-xs rounded-full">
-                      Professional
+          {showComments[post.id] && (
+            <div className="space-y-4">
+              {post.comments?.map((comment) => (
+                <div
+                  key={comment.id}
+                  className="pl-6 border-l-2 border-gray-100"
+                >
+                  <div className="flex items-center">
+                    <span className="font-medium text-gray-800">
+                      {comment.users.name}
                     </span>
-                  )}
+                    {comment.users.is_doctor && (
+                      <span className="ml-2 px-2 py-0.5 bg-purple-100 text-purple-600 text-xs rounded-full">
+                        Professional
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-gray-600 text-sm mt-1">
+                    {comment.content}
+                  </p>
                 </div>
-                <p className="text-gray-600 text-sm mt-1">{comment.content}</p>
-              </div>
-            ))}
+              ))}
 
-            {/* Add Comment */}
-            <div className="flex items-center space-x-2 mt-4">
-              <input
-                type="text"
-                value={commentText[post.id] || ""}
-                onChange={(e) =>
-                  setCommentText((prev) => ({
-                    ...prev,
-                    [post.id]: e.target.value,
-                  }))
-                }
-                placeholder="Add a comment..."
-                className="flex-1 p-2 border border-gray-300 rounded-lg focus:border-purple-500 focus:ring focus:ring-purple-200"
-                onKeyPress={(e) =>
-                  e.key === "Enter" && addComment(post.id, true)
-                }
-              />
-              <button
-                onClick={() => addComment(post.id, true)}
-                className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
-                title="Send Comment"
-              >
-                <Send className="h-5 w-5" />
-              </button>
+              {/* Add Comment */}
+              <div className="flex items-center space-x-2 mt-4">
+                <input
+                  type="text"
+                  value={commentText[post.id] || ""}
+                  onChange={(e) =>
+                    setCommentText((prev) => ({
+                      ...prev,
+                      [post.id]: e.target.value,
+                    }))
+                  }
+                  placeholder="Add a comment..."
+                  className="flex-1 p-2 border border-gray-300 rounded-lg focus:border-purple-500 focus:ring focus:ring-purple-200"
+                  onKeyPress={(e) =>
+                    e.key === "Enter" && addComment(post.id, true)
+                  }
+                />
+                <button
+                  onClick={() => addComment(post.id, true)}
+                  className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                  title="Send Comment"
+                >
+                  <Send className="h-5 w-5" />
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       ))}
 
@@ -575,78 +622,66 @@ export const SocialFeed = () => {
               />
               <span>{post.likes}</span>
             </button>
-            <div className="flex items-center space-x-2">
+            <button
+              onClick={() => toggleComments(post.id)}
+              className="flex items-center space-x-2"
+            >
               <MessageCircle className="h-5 w-5" />
               <span>{post.comments?.length || 0}</span>
-            </div>
+            </button>
           </div>
 
           {/* Comments */}
-          <div className="space-y-4">
-            {post.comments?.map((comment) => (
-              <div key={comment.id} className="pl-6 border-l-2 border-gray-100">
-                <div className="flex items-center">
-                  <span className="font-medium text-gray-800">
-                    {comment.users.name}
-                  </span>
-                  {comment.users.is_doctor && (
-                    <span className="ml-2 px-2 py-0.5 bg-purple-100 text-purple-600 text-xs rounded-full">
-                      Professional
+          {showComments[post.id] && (
+            <div className="space-y-4">
+              {post.comments?.map((comment) => (
+                <div
+                  key={comment.id}
+                  className="pl-6 border-l-2 border-gray-100"
+                >
+                  <div className="flex items-center">
+                    <span className="font-medium text-gray-800">
+                      {comment.users.name}
                     </span>
-                  )}
+                    {comment.users.is_doctor && (
+                      <span className="ml-2 px-2 py-0.5 bg-purple-100 text-purple-600 text-xs rounded-full">
+                        Professional
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-gray-600 text-sm mt-1">
+                    {comment.content}
+                  </p>
                 </div>
-                <p className="text-gray-600 text-sm mt-1">{comment.content}</p>
-              </div>
-            ))}
+              ))}
 
-            {/* Add Comment */}
-            <div className="flex items-center space-x-2 mt-4">
-              <input
-                type="text"
-                value={commentText[post.id] || ""}
-                onChange={(e) =>
-                  setCommentText((prev) => ({
-                    ...prev,
-                    [post.id]: e.target.value,
-                  }))
-                }
-                placeholder="Add a comment..."
-                className="flex-1 p-2 border border-gray-300 rounded-lg focus:border-purple-500 focus:ring focus:ring-purple-200"
-                onKeyPress={(e) => e.key === "Enter" && addComment(post.id)}
-              />
-              <button
-                onClick={() => addComment(post.id)}
-                className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
-                title="Send Comment"
-              >
-                <Send className="h-5 w-5" />
-              </button>
+              {/* Add Comment */}
+              <div className="flex items-center space-x-2 mt-4">
+                <input
+                  type="text"
+                  value={commentText[post.id] || ""}
+                  onChange={(e) =>
+                    setCommentText((prev) => ({
+                      ...prev,
+                      [post.id]: e.target.value,
+                    }))
+                  }
+                  placeholder="Add a comment..."
+                  className="flex-1 p-2 border border-gray-300 rounded-lg focus:border-purple-500 focus:ring focus:ring-purple-200"
+                  onKeyPress={(e) => e.key === "Enter" && addComment(post.id)}
+                />
+                <button
+                  onClick={() => addComment(post.id)}
+                  className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                  title="Send Comment"
+                >
+                  <Send className="h-5 w-5" />
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       ))}
-
-      {/* Create Post */}
-      <div className="fixed bottom-0 left-5 right-0 bg-white border-t border-gray-200 p-4">
-        <div className="max-w-2xl mx-auto">
-          <textarea
-            value={newPost}
-            onChange={(e) => setNewPost(e.target.value)}
-            placeholder="Share your thoughts..."
-            className="w-full p-3 border border-gray-300 rounded-lg focus:border-purple-500 focus:ring focus:ring-purple-200"
-            rows={1}
-          />
-          <div className="mt-3 flex justify-end">
-            <button
-              onClick={createPost}
-              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center"
-            >
-              <Send className="h-4 w-4 mr-2" />
-              Post
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
