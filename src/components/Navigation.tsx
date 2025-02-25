@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Menu, X, Heart, Stethoscope, Moon } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 
 interface NavigationProps {
@@ -14,11 +14,18 @@ export const Navigation: React.FC<NavigationProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuthStore();
+  const location = useLocation();
+
+  const isDashboardView = location.pathname.startsWith("/dashboard");
 
   return (
-    <nav className="bg-white/80 dark:bg-gray-700 backdrop-blur-md fixed w-full z-40 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-8">
+    <nav
+      className={`${
+        isDashboardView ? "bg-transparent" : "bg-white/80 dark:bg-gray-700"
+      } backdrop-blur-md fixed w-full z-20 shadow-sm`}
+    >
+      <div className="max-w-7xl mx-auto px-8 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-2">
               <Heart className="h-8 w-8 text-purple-500" />

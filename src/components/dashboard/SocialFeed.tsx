@@ -117,7 +117,7 @@ export const SocialFeed = () => {
   };
 
   const createPost = async () => {
-    if (!newPost.trim() || !user) return;
+    if (!newPost.trim()) return;
 
     try {
       const randomUserId = `random-user-${Math.floor(Math.random() * 1000)}`;
@@ -184,7 +184,7 @@ export const SocialFeed = () => {
   };
 
   const addComment = async (postId: string, isRandom: boolean = false) => {
-    if (!commentText[postId]?.trim() || !user) return;
+    if (!commentText[postId]?.trim()) return;
 
     try {
       const randomUserId = `random-user-${Math.floor(Math.random() * 1000)}`;
@@ -481,12 +481,10 @@ export const SocialFeed = () => {
                   }
                   placeholder="Add a comment..."
                   className="flex-1 p-2 border border-gray-300 rounded-lg focus:border-purple-500 focus:ring focus:ring-purple-200"
-                  onKeyPress={(e) =>
-                    e.key === "Enter" && addComment(post.id, true)
-                  }
+                  onKeyPress={(e) => e.key === "Enter" && addComment(post.id)}
                 />
                 <button
-                  onClick={() => addComment(post.id, true)}
+                  onClick={() => addComment(post.id)}
                   className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
                   title="Send Comment"
                 >
