@@ -107,44 +107,47 @@ export const MoodSlider = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-md">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-        How are you feeling today?
-      </h2>
-      <div className="space-y-6 flex flex-col gap-0">
-        <div className="flex flex-col gap-4">
-          <label htmlFor="moodSlider" className="sr-only">
-            Select your mood
-          </label>
-          <input
-            id="moodSlider"
-            type="range"
-            min="0"
-            max="26"
-            value={selectedIndex}
-            onChange={handleSliderChange}
-            className="w-full h-2 bg-gradient-to-r from-purple-200 via-purple-400 to-purple-600 rounded-lg appearance-none cursor-pointer"
-            title="Mood Slider"
-            aria-valuemin="0"
-            aria-valuemax="26"
-            aria-valuenow={selectedIndex.toString()}
-            aria-valuetext={moods[selectedIndex].name}
-            aria-label={`Mood: ${moods[selectedIndex].name}`}
-          />
-          <div className="text-center">
-            <div className="text-4xl mb-2">{moods[selectedIndex].emoji}</div>
-            <div className="text-purple-600 font-medium">
-              {moods[selectedIndex].name}
+    <>
+      <div className="h-16 bg-white"></div>
+      <div className="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-md mt-0">
+        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+          How are you feeling today?
+        </h2>
+        <div className="space-y-6 flex flex-col gap-0">
+          <div className="flex flex-col gap-4">
+            <label htmlFor="moodSlider" className="sr-only">
+              Select your mood
+            </label>
+            <input
+              id="moodSlider"
+              type="range"
+              min="0"
+              max="26"
+              value={selectedIndex}
+              onChange={handleSliderChange}
+              className="w-full h-2 bg-gradient-to-r from-purple-200 via-purple-400 to-purple-600 rounded-lg appearance-none cursor-pointer"
+              title="Mood Slider"
+              aria-valuemin="0"
+              aria-valuemax="26"
+              aria-valuenow={selectedIndex.toString()}
+              aria-valuetext={moods[selectedIndex].name}
+              aria-label={`Mood: ${moods[selectedIndex].name}`}
+            />
+            <div className="text-center">
+              <div className="text-4xl mb-2">{moods[selectedIndex].emoji}</div>
+              <div className="text-purple-600 font-medium">
+                {moods[selectedIndex].name}
+              </div>
             </div>
           </div>
+          <button
+            onClick={handleSaveMood}
+            className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+          >
+            Save Mood
+          </button>
         </div>
-        <button
-          onClick={handleSaveMood}
-          className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-        >
-          Save Mood
-        </button>
       </div>
-    </div>
+    </>
   );
 };

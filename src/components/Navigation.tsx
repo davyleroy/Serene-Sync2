@@ -17,11 +17,14 @@ export const Navigation: React.FC<NavigationProps> = ({
   const location = useLocation();
 
   const isDashboardView = location.pathname.startsWith("/dashboard");
+  const isMoodPage = location.pathname === "/mood";
 
   return (
     <nav
       className={`${
-        isDashboardView ? "bg-transparent" : "bg-white/80 dark:bg-gray-700"
+        isDashboardView || isMoodPage
+          ? "bg-transparent"
+          : "bg-white/50 dark:bg-gray-700"
       } backdrop-blur-md fixed w-full z-20 shadow-sm`}
     >
       <div className="max-w-7xl mx-auto px-8 sm:px-6 lg:px-8">
